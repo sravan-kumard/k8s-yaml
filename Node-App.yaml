@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-deployment-xfusion
+  namespace: node-namespace-xfusion
+  labels:
+    app: ic-nautilus
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ic-nautilus
+  template:
+    metadata:
+      labels:
+        app: ic-nautilus
+    spec:
+      containers:
+      - name: node-container-xfusion
+        image: gcr.io/kodekloud/centos-ssh-enabled:node
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service-xfusion
+  namespace: node-namespace-xfusion
+  labels:
+    app: ic-nautilus
+spec:
+  # comment or delete the following line if you want to use a LoadBalancer
+  type: NodePort 
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  # type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+    nodePort: 30012
+  selector:
+    app: ic-nautilus
